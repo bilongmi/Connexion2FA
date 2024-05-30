@@ -4,13 +4,13 @@
       <h1>Verify 2FA</h1>
       <form @submit.prevent="verify2FA">
         <div class="input-container">
-          <label for="token">2FA Token</label>
+          <label for="code">2FA code authentification</label>
           <img src="/images/password-icon.png" alt="Token Icon" class="input-icon" />
           <input
-            v-model="token"
+            v-model="code"
             type="text"
-            id="token"
-            placeholder="Enter your 2FA token"
+            id="code"
+            placeholder="Enter your 2FA code"
             required
           />
         </div>
@@ -24,11 +24,12 @@
 <script>
 import axios from 'axios'
 import { useRouter, useRoute } from 'vue-router'
+import { SERVER_URL } from "@/constants/shared.js";
 
 export default {
   data() {
     return {
-      token: '',
+      code: '',
       errorMessage: ''
     }
   },
@@ -43,12 +44,12 @@ export default {
   methods: {
     async verify2FA() {
       try {
-        const response = await axios.post('http://localhost:3000/verify-2fa', {
+        const response = await axios.post(`${SERVER_URL}/verify`, {
           email: this.route.params.email,
-          token: this.token
+          code: this.code
         })
         alert('Login successful')
-        this.router.push({ name: 'HomeForm' })
+        await this.router.push({ name: 'HomeForm' })
       } catch (error) {
         this.errorMessage = 'Invalid 2FA code'
       }
